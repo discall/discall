@@ -1,11 +1,11 @@
-import React from 'react';
-import Header from './components/Header'
-import './App.css';
+import React from 'react'
+import './App.css'
+import Message from './components/Message'
 
 function App() {
   return (
     <div>
-        <Header/>
+      {/* <Header/>
         <div style={{height:'900px',width:'100%', backgroundColor:'#091C32', justifyContent:'center', display:'flex'}}>
           <div style={{borderRadius:'20px',marginTop:'100px', height:'340px',width:'500px', backgroundColor:'#223C5B', display:'flex', flexDirection:'column', padding:'30px'}}>
           <h1 style={{color:'white', marginLeft:'210px'}}>Login</h1>
@@ -25,8 +25,12 @@ function App() {
           </form>
           </div>
 
-        </div>
+        </div> */}
+      <Message
+        username={'alfredo'}
+        message={'sadiojasdfoidsjfoijsdiofjsoidfjiosdfjiosdfjoisfjoisdfj'}
+      />
     </div>
-  );
+  )
 }
-export default App;
+export default App
