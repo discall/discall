@@ -1,20 +1,26 @@
 import styled from '@emotion/styled'
 
 interface Props {
-  username: string
-  message: string
+  author: { name: string }
+  content: string
 }
 
-const Message: React.FC<Props> = ({ username, message }) => {
+const MessageBox: React.FC<Props> = ({ author, content }) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g
+
   return (
     <Container>
-      <Username>{username}:</Username>
-      <Written>{message}</Written>
+      <Username>{author.name}:</Username>
+      <MessageContent
+        dangerouslySetInnerHTML={{
+          __html: content.replace(urlRegex, '<a href="$1">$1</a>'),
+        }}
+      />
     </Container>
   )
 }
 
-export default Message
+export default MessageBox
 
 const Container = styled.div`
   background: #223c5b;
@@ -26,14 +32,15 @@ const Container = styled.div`
   align-items: flex-start;
   flex-direction: column;
   font-family: 'fresca';
+  margin: 20px;
 `
 
 const Username = styled.div`
-  color: white;
+  color: #86a8cc;
   font-size: 18px;
 `
 
-const Written = styled.div`
+const MessageContent = styled.div`
   font-size: 16px;
   margin-top: 10px;
   margin-right: 50px;
