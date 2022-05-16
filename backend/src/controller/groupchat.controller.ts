@@ -11,7 +11,14 @@ class GroupchatController {
       where: { userId: id },
       include: {
         group: {
-          include: { messages: { include: { author: true } } },
+          include: {
+            usersInGroup: {
+              include: { user: { select: { id: true, name: true } } },
+            },
+            messages: {
+              include: { author: { select: { id: true, name: true } } },
+            },
+          },
         },
       },
     })
@@ -38,8 +45,6 @@ class GroupchatController {
       },
     })
 
-    console.log(group)
-
     if (!group?.usersInGroup.find(user => user.userId === userId)) {
       res.sendStatus(500)
       return
@@ -51,6 +56,7 @@ class GroupchatController {
   static store: Handler = async (req, res) => {
     const { id: userId } = jwtService.decode(res.locals.token)
     const { name } = req.body
+
     const group = await prisma.groupchat.create({
       data: {
         name,
@@ -59,6 +65,7 @@ class GroupchatController {
         },
       },
     })
+
     res.json({ group })
   }
 

@@ -1,21 +1,25 @@
 import styled from '@emotion/styled'
+import { Link } from 'react-router-dom'
 import livro from '../assets/livro.png'
 import { Message, User } from '../utils/types'
 
 interface Props {
   name: string
-  lastMessage: Message & { author: User }
+  lastMessage?: Message & { author: User }
+  id: number
 }
 
-const Group: React.FC<Props> = ({ name, lastMessage }) => {
+const Group: React.FC<Props> = ({ name, lastMessage, id }) => {
   return (
-    <Container href="#">
+    <Container to={`/main/${id}`}>
       <Image src={livro} alt="livro" />
       <Data>
         <GroupName>{name}</GroupName>
-        <LastMessage>
-          {lastMessage.author.name + ': ' + lastMessage.content}
-        </LastMessage>
+        {lastMessage && (
+          <LastMessage>
+            {lastMessage.author.name + ': ' + lastMessage.content}
+          </LastMessage>
+        )}
       </Data>
     </Container>
   )
@@ -23,11 +27,10 @@ const Group: React.FC<Props> = ({ name, lastMessage }) => {
 
 export default Group
 
-const Container = styled.a`
+const Container = styled(Link)`
   display: flex;
-  margin: 30px 10px 10px 10px;
+  padding: 15px;
   border-bottom: solid #091c32;
-  padding-bottom: 15px;
   text-decoration: none;
   color: inherit;
 

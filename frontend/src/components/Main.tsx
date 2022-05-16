@@ -1,6 +1,9 @@
 import styled from '@emotion/styled'
+import { useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import annex from '../assets/annex.png'
 import telegram from '../assets/telegram.png'
+import { createMessage, getMessages } from '../services/api.message'
 import { Message } from '../utils/types'
 import MessageBox from './MessageBox'
 
@@ -13,21 +16,60 @@ interface Props {
   })[]
 }
 
-const Main: React.FC<Props> = ({ messages }) => {
+const Main: React.FC<Props> = ({ messages: defaultMessages }) => {
+  const [messages, setMessages] = useState(defaultMessages)
+  const [message, setMessage] = useState('')
+
+  const { groupId: groupIdStr } = useParams()
+  const groupId = parseInt(groupIdStr!)
+
+  const ref = useRef<HTMLDivElement>(null)
+
+  const handleSubmit: React.FormEventHandler = async e => {
+    e.preventDefault()
+
+    try {
+      await createMessage(groupId, { content: message })
+      setMessage('')
+      const messages = await getMessages(groupId)
+      setMessages(messages)
+    } catch (error) {
+      console.log(error)
+      setMessage('')
+    }
+  }
+
+  useEffect(() => {
+    getMessages(groupId).then(setMessages)
+  }, [groupId])
+
+  useEffect(() => {
+    if (ref.current) {
+      const scrollHeight = ref.current.scrollHeight
+      const height = ref.current.clientHeight
+      const maxScrollTop = scrollHeight - height
+      ref.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0
+    }
+  }, [ref, messages])
+
   return (
     <Container>
-      <div>
+      <MessagesContainer ref={ref}>
         {messages.map(({ author, content }) => (
           <MessageBox author={author} content={content} />
         ))}
-      </div>
+      </MessagesContainer>
 
-      <MessageBar>
+      <MessageBar onSubmit={handleSubmit}>
         <FileButton>
           <img src={annex} alt="annex" />
         </FileButton>
         <MessageInput>
-          <Input type="text" />
+          <Input
+            type="text"
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+          />
         </MessageInput>
         <SendButton>
           <img src={telegram} alt="telegram" />
@@ -43,10 +85,16 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
+  height: inherit;
+  height: calc(100vh - 90px);
 `
 
-const MessageBar = styled.footer`
+const MessagesContainer = styled.div`
+  flex-grow: 1;
+  overflow-y: scroll;
+`
+
+const MessageBar = styled.form`
   background-color: #223c5b;
   display: flex;
   align-items: center;

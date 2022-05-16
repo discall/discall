@@ -81,7 +81,7 @@ class AuthController {
 
     const token = jwtService.encode(user)
 
-    res.json({ token })
+    res.json({ user, token })
   }
 }
 

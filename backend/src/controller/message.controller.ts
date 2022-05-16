@@ -36,6 +36,7 @@ class MessageController {
 
     const message = await prisma.message.findFirst({
       where: { groupId, id },
+      include: { author: { select: { id: true, email: true } } },
     })
 
     res.json({ message })

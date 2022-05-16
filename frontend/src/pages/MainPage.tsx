@@ -1,54 +1,52 @@
 import styled from '@emotion/styled'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import wip from '../assets/wip.png'
 import GroupHeader from '../components/GroupHeader'
 import Groups from '../components/Groups'
 import Main from '../components/Main'
 import MainHeader from '../components/MainHeader'
-import { Groupchat, Message, User } from '../utils/types'
-import wip from '../assets/wip.png'
+import { getGroups } from '../services/api.group'
+import { GroupList } from '../utils/types'
 
-const grampos: (Groupchat & {
-  users: User[]
-  messages: (Message & {
-    author: User
-  })[]
-})[] = [
-  {
-    id: 1,
-    users: [],
-    messages: [
-      { content: 'muito fofo alek', author: { name: 'artu' } },
-      { content: 'sim amigo', author: { name: 'guilerm' } },
-      { content: 'bota meu nome no nome do grupo', author: { name: 'matixa' } },
-      { content: 'nao 👍', author: { name: 'artu' } },
-    ],
+export enum LeftPage {
+  GROUPS,
+  CONFIG,
+  ADD_GROUP,
+}
 
-    name: 'grupo interessante',
-  },
-  {
-    id: 2,
-    users: [],
-    messages: [{ content: 'parabens amigo', author: { name: 'caio' } }],
-    name: 'grupoultrafofo',
-  },
-]
+const MainPage: React.FC = () => {
+  const [groups, setGroups] = useState<GroupList>([])
+  const [group, setGroup] = useState<GroupList[number] | null>(null)
+  const [page, setPage] = useState(LeftPage.GROUPS)
 
-interface Props {}
+  const { groupId } = useParams()
 
-const MainPage: React.FC<Props> = ({}) => {
+  useEffect(() => {
+    if (groupId) {
+      const id = parseInt(groupId)
+      setGroup(groups.find(group => group.id === id) ?? null)
+    }
+  }, [groupId, groups])
+
+  useEffect(() => {
+    getGroups().then(setGroups)
+  }, [page])
+
   return (
     <Container>
       <GroupHeaderG>
-        <GroupHeader />
+        <GroupHeader setPage={setPage} />
       </GroupHeaderG>
       <MainHeaderG>
-        <MainHeader name={grampos[0].name} members={grampos[0].users.length} />
+        {group && (
+          <MainHeader name={group.name} members={group.usersInGroup.length} />
+        )}
       </MainHeaderG>
       <GroupsG>
-        <Groups groups={grampos} />
+        <Groups groups={groups} page={page} setPage={setPage} />
       </GroupsG>
-      <MainG>
-        <Main messages={grampos[0].messages} />
-      </MainG>
+      <MainG>{group && <Main messages={group.messages} />}</MainG>
       <DrawerG>
         <Image src={wip} />
       </DrawerG>
@@ -65,7 +63,7 @@ const Container = styled.div`
     'groups main drawer';
   grid-template-columns: 25% 50% 25%;
   grid-template-rows: 90px 1fr;
-  height: 100%;
+  height: 100vh;
 `
 
 const GroupHeaderG = styled.div`

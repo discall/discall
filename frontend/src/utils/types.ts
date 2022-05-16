@@ -1,3 +1,5 @@
+import { getGroups } from '../services/api.group'
+
 export type User = {
   // id: number
   // email: string
@@ -63,3 +65,6 @@ export enum UserType {
   COMMON = 'COMMON',
   ADMIN = 'ADMIN',
 }
+
+export type GroupList = Awaited<ReturnType<typeof getGroups>>
+export type Group = GroupList[number]

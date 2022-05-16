@@ -1,9 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
+import { useAuth } from '../contexts/AuthContext'
 
 function App() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+
+  const { signIn } = useAuth()
+
   const navigate = useNavigate()
+
+  const handleSubmit: React.FormEventHandler = async e => {
+    e.preventDefault()
+    setError('')
+
+    try {
+      await signIn({ email, password })
+      navigate('/main')
+    } catch (error) {
+      setError('Email ou senha incorretos')
+    }
+  }
 
   return (
     <>
@@ -30,7 +49,10 @@ function App() {
           }}
         >
           <h1 style={{ color: 'white', textAlign: 'center' }}>Login</h1>
-          <form action="">
+          {error && (
+            <p style={{ color: '#c95243', textAlign: 'center' }}>{error}</p>
+          )}
+          <form onSubmit={handleSubmit}>
             <div>
               <div>
                 <label style={{ color: 'white', fontSize: '22px' }}>
@@ -38,8 +60,11 @@ function App() {
                 </label>
               </div>
               <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 style={{ borderRadius: '5px', height: '30px', width: '100%' }}
-              ></input>
+              />
             </div>
             <div>
               <div>
@@ -48,7 +73,9 @@ function App() {
                 </label>
               </div>
               <input
-                type={'password'}
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
                 style={{
                   width: '100%',
                   borderRadius: '5px',
@@ -56,7 +83,7 @@ function App() {
                 }}
               ></input>
               <button
-                onClick={() => navigate('/main')}
+                type="submit"
                 style={{
                   color: 'white',
                   backgroundColor: '#4A6488',

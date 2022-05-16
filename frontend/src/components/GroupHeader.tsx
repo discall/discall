@@ -2,18 +2,25 @@ import styled from '@emotion/styled'
 import adicionar from '../assets/adicionar.png'
 import configuracoes from '../assets/configuracoes.png'
 import livro from '../assets/logo.png'
+import { LeftPage } from '../pages/MainPage'
 
-const GroupHeader: React.FC = ({}) => {
+interface Props {
+  setPage: (page: LeftPage) => void
+}
+
+const GroupHeader: React.FC<Props> = ({ setPage }) => {
   return (
     <Container>
-      <Logo src={livro} />
+      <Button onClick={() => setPage(LeftPage.GROUPS)}>
+        <Logo src={livro} />
+      </Button>
       <Buttons>
-        <ConfigButton>
+        <Button onClick={() => setPage(LeftPage.CONFIG)}>
           <img src={configuracoes} alt="configuracoes" />
-        </ConfigButton>
-        <AddButton>
+        </Button>
+        <Button onClick={() => setPage(LeftPage.ADD_GROUP)}>
           <img src={adicionar} alt="adicionar" />
-        </AddButton>
+        </Button>
       </Buttons>
     </Container>
   )
@@ -33,7 +40,7 @@ const Buttons = styled.div`
   padding-bottom: 20px;
 `
 
-const ConfigButton = styled.button`
+const Button = styled.button`
   background-color: transparent;
   border: none;
   cursor: pointer;
