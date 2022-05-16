@@ -57,64 +57,45 @@ class User {
 	String email;
 	String password;
 	String name;
+	String resume;
+	List<Groupchat> groups;
 }
 
 // entity
-class Classroom {
+class Groupchat {
 	int id;
-	User professor;
-	List<User> students;
-	List<Message> chatMessages;
-	List<Activity> activities;
+	String name;
+	List<User> users;
+	List<Message> messages;
+	List<Event> events;
 }
 
 // relation
-class StudentInClassroom {
-	User student;
-	Classroom classroom;
-
-	// monitores ou alunos que o professor escolher para auxiliar no gerenciamento da turma (falso por padrão)
-	boolean isAdmin = false;
+class UserInGroup {
+	User user;
+	Groupchat group;
+	UserType type;
+	enum UserType { REQUEST, COMMON, ADMIN };
 }
 
 // entity
 class Message {
-	Classroom classroom;
 	int id;
+	Groupchat group;
 	User author;
 	String content;
+	String filePath;
+	String folder;
 	LocalDateTime dateTime;
 }
 
-// entity
-class Activity {
-	Classroom classroom;
+class Event {
 	int id;
-	LocalDateTime start;
-	LocalDateTime end;
+	Groupchat group;
 	String title;
 	String description;
-	ActivityType type;
-	boolean acceptFileUpload;
-}
-enum ActivityType { ACTIVITY, EVALUATION, CLASS }
-
-// relation
-class StudentActivityFile {
-	Activity activity;
-	User student;
-	File file;
-}
-
-// entity
-class Material {
-	Classroom classroom;
-	int id;
-	String title;
-	String description;
-
-	// refere-se às “pastas” que aparecerão na interface
-	String group;
+	LocalDateTime initialDateTime;
+	LocalDateTime finalDateTime;
 }
 
 ```
