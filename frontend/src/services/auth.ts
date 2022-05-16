@@ -7,7 +7,6 @@ const auth = axios.create({ baseURL: `${BASE_URL}/auth` })
 
 auth.interceptors.request.use(config => {
   const token = getToken()
-  console.log(config)
   return {
     ...config,
     headers: token

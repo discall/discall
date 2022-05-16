@@ -21,7 +21,7 @@ const Groups: React.FC<Props> = ({ groups, page, setPage }) => {
     e.preventDefault()
 
     try {
-      const result = await createGroup({ name })
+      await createGroup({ name })
     } catch (error) {
       console.log(error)
     } finally {

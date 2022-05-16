@@ -45,9 +45,3 @@ const Button = styled.button`
   border: none;
   cursor: pointer;
 `
-
-const AddButton = styled.button`
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-`

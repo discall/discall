@@ -10,7 +10,7 @@ class MessageController {
     const groupId = parseInt(groupIdStr)
 
     const messages = await prisma.message.findMany({
-      where: { groupId, authorId: id },
+      where: { groupId },
       include: { author: { select: { id: true, name: true } } },
       orderBy: { dateTime: 'asc' },
     })

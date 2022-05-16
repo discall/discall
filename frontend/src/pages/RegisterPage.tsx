@@ -1,24 +1,22 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Header from '../components/Header'
-import { useAuth } from '../contexts/AuthContext'
+import { signUp } from '../services/auth'
 
-function App() {
+function RegisterPage() {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-
-  const { signIn } = useAuth()
-
-  const navigate = useNavigate()
+  const [msg, setMsg] = useState('')
 
   const handleSubmit: React.FormEventHandler = async e => {
     e.preventDefault()
     setError('')
 
     try {
-      await signIn({ email, password })
-      navigate('/main')
+      await signUp({ email, password, name, resume: '' })
+      setMsg('Cadastrado com sucesso!')
     } catch (error) {
       setError('Email ou senha incorretos')
     }
@@ -49,7 +47,21 @@ function App() {
           {error && (
             <p style={{ color: '#c95243', textAlign: 'center' }}>{error}</p>
           )}
+          {msg && (
+            <p style={{ color: '#95dacb', textAlign: 'center' }}>{msg}</p>
+          )}
           <form onSubmit={handleSubmit}>
+            <div>
+              <div>
+                <label style={{ color: 'white', fontSize: '22px' }}>Nome</label>
+              </div>
+              <input
+                type="text"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                style={{ borderRadius: '5px', height: '30px', width: '100%' }}
+              />
+            </div>
             <div>
               <div>
                 <label style={{ color: 'white', fontSize: '22px' }}>
@@ -93,8 +105,8 @@ function App() {
               >
                 Entrar
               </button>
-              <Link to="/register" style={{ color: 'white', fontSize: '16px' }}>
-                Cadastre-se
+              <Link to="/" style={{ color: 'white', fontSize: '16px' }}>
+                Fazer login
               </Link>
             </div>
           </form>
@@ -103,4 +115,4 @@ function App() {
     </>
   )
 }
-export default App
+export default RegisterPage
